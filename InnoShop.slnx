@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/FrontEnd/" />
+  <Folder Name="/src/Services/" />
+  <Folder Name="/src/Services/ProductManagement/">
+    <Project Path="src/Services/ProductManagement/ProductManagement.API/ProductManagement.API.csproj" />
+    <Project Path="src/Services/ProductManagement/ProductManagement.Core/ProductManagement.Core.csproj" />
+    <Project Path="src/Services/ProductManagement/ProductManagement.DataAccess/ProductManagement.DataAccess.csproj" />
+    <Project Path="src/Services/ProductManagement/ProductManagement.Domain/ProductManagement.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Services/UserManagement/" />
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/Shared.Core/Shared.Core.csproj" />
+  </Folder>
+  <Folder Name="/test/" />
+</Solution>
