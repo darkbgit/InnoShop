@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using ProductManagement.Core.Exceptions;
+using Shared.Core.Exceptions;
 
 namespace ProductManagement.API.Middlewares;
 

@@ -1,3 +1,4 @@
+using ProductManagement.API.Middlewares;
 using ProductManagement.DataAccess.Data;
 using ProductManagement.DataAccess.Helpers;
 
@@ -19,5 +20,10 @@ internal static class HostingExtensions
             var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "An error occurred seeding the DB.");
         }
+    }
+
+    public static void UseAuthFromRequestHeaderMiddleware(this WebApplication app)
+    {
+        app.UseMiddleware<AuthFromRequestHeaderMiddleware>();
     }
 }

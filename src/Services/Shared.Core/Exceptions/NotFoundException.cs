@@ -1,4 +1,4 @@
-namespace ProductManagement.Core.Exceptions;
+namespace Shared.Core.Exceptions;
 
 public class NotFoundException : Exception
 {

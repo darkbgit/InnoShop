@@ -1,7 +1,7 @@
 using MediatR;
 using ProductManagement.Core.DTOs;
-using ProductManagement.Core.Exceptions;
 using ProductManagement.Core.Interfaces;
+using Shared.Core.Exceptions;
 
 namespace ProductManagement.Core.Features.GetProductById;
 

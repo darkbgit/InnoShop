@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
-using ProductManagement.Core.Exceptions;
 using ProductManagement.Domain.Interfaces;
+using Shared.Core.Exceptions;
 
 namespace ProductManagement.Core.Features.UpdateProduct;
 

@@ -21,9 +21,7 @@ internal class ProductReadRepository(InnoShopContext context, IMapper mapper) : 
 
         long count;
 
-        var isNeedSearch = !string.IsNullOrEmpty(searchString);
-
-        if (isNeedSearch)
+        if (!string.IsNullOrEmpty(searchString))
         {
             query = query.Where(products => products.Name.Contains(searchString) ||
                                                products.Description.Contains(searchString) ||

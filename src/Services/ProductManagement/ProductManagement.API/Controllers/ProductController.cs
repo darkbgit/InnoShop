@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace ProductManagement.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize]
+[Authorize]
 public class ProductController(IMediator mediator, IMapper mapper) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
@@ -44,10 +45,22 @@ public class ProductController(IMediator mediator, IMapper mapper) : ControllerB
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var currentUserId = Guid.NewGuid(); //TODO: Get from auth context
+        var isAuthenticated = HttpContext?.User.Identity is { IsAuthenticated: true };
+
+        if (!isAuthenticated)
+        {
+            return Forbid();
+        }
+
+        var currentUserId = HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (!Guid.TryParse(currentUserId, out var guidCurrentUserId))
+        {
+            return Forbid();
+        }
 
         var command = _mapper.Map<CreateProductCommand>(product);
-        command.CreatedBy = currentUserId;
+        command.CreatedBy = guidCurrentUserId;
 
         var result = await _mediator.Send(command);
 

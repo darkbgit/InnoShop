@@ -1,7 +1,10 @@
+using ProductManagement.API.Clients;
 using ProductManagement.API.Extensions;
-using ProductManagement.API.Middlewares;
+using ProductManagement.API.Handlers;
 using ProductManagement.Core.DI;
 using ProductManagement.DataAccess.DI;
+using Refit;
+using Shared.Core.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,17 @@ builder.Services.AddOpenApi();
 
 ServiceCollectionForDataAccess.RegisterDependencies(builder.Services, builder.Configuration);
 ServiceCollectionForCore.RegisterDependencies(builder.Services);
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<CustomHttpMessageHandler>();
+
+var authClient = builder.Configuration["AuthClient"] ??
+    throw new ArgumentNullException("AuthClient is not configured");
+
+builder.Services.AddRefitClient<IAuthClient>()
+    .AddHttpMessageHandler<CustomHttpMessageHandler>()
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(authClient));
 
 builder.Services.AddControllers();
 
@@ -24,9 +38,13 @@ if (app.Environment.IsDevelopment())
     await app.SeedDatabaseAsync();
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
-
+app.UseCustomExceptionMiddleware();
 app.UseHttpsRedirection();
+app.UseAuthFromRequestHeaderMiddleware();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
