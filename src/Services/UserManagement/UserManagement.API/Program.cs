@@ -11,6 +11,17 @@ var builder = WebApplication.CreateBuilder(args);
 ServiceCollectionForInfrastructure.RegisterDependencies(builder.Services, builder.Configuration);
 ServiceCollectionForCore.RegisterDependencies(builder.Services);
 
+var reactApp = builder.Configuration["ReactApp"] ?? 
+    throw new ArgumentNullException("ReactApp is not configured");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins(reactApp);
+    });
+});
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -51,6 +62,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCustomExceptionMiddleware();
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();

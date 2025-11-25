@@ -10,10 +10,24 @@ public static class IdentitySeed
         RoleManager<ApplicationRole> roleManager)
     {
         const string adminEmail = "admin@admin.com";
-        const string userEmail = "user@user.com";
+        const string user1Email = "user1@user.com";
+        const string user2Email = "user2@user.com";
+        const string user3Email = "user3@user.com";
+
+
 
         string adminPassword = "AdminAdmin1!";
-        string userPassword = "UserUser1!";
+        string user1Password = "UserUser1!";
+        string user2Password = "UserUser2!";
+        string user3Password = "UserUser3!";
+
+        var adminId = Guid.Parse("00000000-0000-0000-0000-000000000010");
+
+        var user1Id = Guid.Parse("00000000-0000-0000-0000-000000000001");
+        var user2Id = Guid.Parse("00000000-0000-0000-0000-000000000002");
+        var user3Id = Guid.Parse("00000000-0000-0000-0000-000000000003");
+
+
 
         await SeedRolesAsync(roleManager);
 
@@ -21,6 +35,7 @@ public static class IdentitySeed
         {
             var user = new ApplicationUser()
             {
+                Id = adminId,
                 Email = adminEmail,
                 UserName = adminEmail,
                 EmailConfirmed = true,
@@ -33,17 +48,52 @@ public static class IdentitySeed
             }
         }
 
-        if (await userManager.FindByNameAsync(userEmail) == null)
+        if (await userManager.FindByNameAsync(user1Email) == null)
         {
             var user = new ApplicationUser()
             {
-                Email = userEmail,
-                UserName = userEmail,
+                Id = user1Id,
+                Email = user1Email,
+                UserName = user1Email,
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true,
             };
 
-            var result = await userManager.CreateAsync(user, userPassword);
+            var result = await userManager.CreateAsync(user, user1Password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, Roles.User.ToString());
+            }
+        }
+        if (await userManager.FindByNameAsync(user2Email) == null)
+        {
+            var user = new ApplicationUser()
+            {
+                Id = user2Id,
+                Email = user2Email,
+                UserName = user2Email,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+
+            var result = await userManager.CreateAsync(user, user2Password);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, Roles.User.ToString());
+            }
+        }
+        if (await userManager.FindByNameAsync(user3Email) == null)
+        {
+            var user = new ApplicationUser()
+            {
+                Id = user3Id,
+                Email = user3Email,
+                UserName = user3Email,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+            };
+
+            var result = await userManager.CreateAsync(user, user3Password);
             if (result.Succeeded)
             {
                 await userManager.AddToRoleAsync(user, Roles.User.ToString());
