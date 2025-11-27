@@ -1,4 +1,4 @@
-export interface ProductDetail {
+export interface Product {
   id: number;
   name: string;
   description: string;
@@ -11,8 +11,32 @@ export interface ProductDetail {
   createdBy: string;
 }
 
-export interface PaginatedProducts {
-  items: ProductDetail[];
+export interface ProductDetail {
+  id: number;
+  name: string;
+  longDescription: string;
+  price: number;
+  isOnSale: boolean;
+  salePrice: number;
+  createdAt: Date;
+  categoryName: string;
+  createdBy: string;
+}
+
+export interface ProductEdit {
+  id: number;
+  name: string;
+  description: string;
+  longDescription: string;
+  price: number;
+  isAvailable: boolean;
+  isOnSale: boolean;
+  salePrice: number;
+  categoryName: string;
+}
+
+export interface PaginatedList<T> {
+  items: T[];
   currentPage: number;
   totalPages: number;
   pageSize: number;
@@ -21,18 +45,15 @@ export interface PaginatedProducts {
   hasNextPage: boolean;
 }
 
-export interface PaginatedList<T> {
-  items: T[];
-  totalCount: number;
-  pageSize: number;
-  currentPage: number;
-  totalPages: number;
-}
-
 export interface ProductQuery {
   searchString?: string;
   sortBy?: string;
   sortOrder?: string;
+  createdBy?: string;
   pageNumber: number;
   pageSize: number;
+}
+
+export interface CreateProductRequest {
+  name: string;
 }

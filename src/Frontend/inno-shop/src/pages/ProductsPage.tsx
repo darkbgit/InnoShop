@@ -1,12 +1,11 @@
 import { useLoaderData, useSearchParams } from "react-router";
-import { loadProducts } from "../loaders/productLoader";
+import { loadProducts } from "../loaders/productLoaders";
 import { Pagination, Stack } from "@mui/material";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Products from "../components/Products/Products";
 
 const ProductsPage = () => {
   const paginatedProducts = useLoaderData<typeof loadProducts>();
-  //const { items, currentPage, totalPages, totalCount } = useLoaderData() as PaginatedList<ProductDto>;
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handlePageChange = (

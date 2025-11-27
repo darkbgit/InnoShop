@@ -78,20 +78,6 @@ public class UsersController(IUserService usersService)
         return Ok();
     }
 
-    // /// <summary>
-    // /// Create user.
-    // /// </summary>
-    // [AllowAnonymous]
-    // [HttpPost("register")]
-    // public async Task<ActionResult<UserDto>> AddUser([FromBody] RegisterRequest request)
-    // {
-    //     var id = await _usersService.CreateUserAsync(request);
-
-    //     var user = await _usersService.GetUserByIdAsync(id);
-
-    //     return CreatedAtAction(nameof(GetUserById), new { id }, user);
-    // }
-
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UserUpdateRequest request)
     {

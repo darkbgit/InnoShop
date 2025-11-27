@@ -9,5 +9,5 @@ namespace ProductManagement.Core.Interfaces;
 public interface IProductReadRepository : IReadRepository<Product>
 {
     Task<ProductDto?> GetProductDtoByIdAsync(long id, CancellationToken cancellationToken = default);
-    Task<PaginatedList<ProductDto>> GetPaginatedProductDtosAsync(int pageNumber, int pageSize, ProductsSortEnum sortBy, SortOrderEnum sortOrder, string? searchString = null, CancellationToken cancellationToken = default);
+    Task<PaginatedList<ProductDto>> GetPaginatedProductDtosAsync(int pageNumber, int pageSize, ProductsSortEnum sortBy, SortOrderEnum sortOrder, string? searchString = null, string? createdBy = null, CancellationToken cancellationToken = default);
 }

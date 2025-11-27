@@ -5,18 +5,14 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import type { ProductDetail } from "../../interfaces/product.interface";
+import type { Product } from "../../interfaces/product.interface";
 import { Link, useFetcher, useRouteLoaderData } from "react-router";
 import Price from "../Price/Price";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import type { UserInfo } from "../../interfaces/user.interface";
 
-interface props {
-  product: ProductDetail;
-}
-
-const ProductCard = ({ product }: props) => {
+const ProductCard = ({ product }: { product: Product }) => {
   const currentUser = useRouteLoaderData("root") as UserInfo | null;
   const isOwner = currentUser && currentUser.id === product.createdBy;
   const fetcher = useFetcher();
@@ -38,7 +34,7 @@ const ProductCard = ({ product }: props) => {
       </CardContent>
       <CardActions>
         <Button size="small">
-          <Link to={`/product/${product.id}`}>Show more</Link>
+          <Link to={`/products/${product.id}`}>Show more</Link>
         </Button>
         {isOwner && (
           <div
@@ -46,12 +42,12 @@ const ProductCard = ({ product }: props) => {
             style={{ display: "flex", gap: "10px" }}
           >
             <Button size="small" startIcon={<EditIcon />}>
-              <Link to={`/product/${product.id}/edit`}>Edit</Link>
+              <Link to={`/products/${product.id}/edit`}>Edit</Link>
             </Button>
 
             <fetcher.Form
               method="delete"
-              action={`/products/${product.id}/destroy`}
+              action={`/products/${product.id}/delete`}
             >
               <Button
                 size="small"

@@ -1,17 +1,23 @@
-import type { LoaderFunctionArgs } from "react-router";
-import { fetchProductById, fetchProducts } from "../api/products";
+import authService from "../api/auth";
+import type { UserInfo } from "../interfaces/user.interface";
 
-export const loadUser = async () => {
-  const paginatedProducts = await fetchProducts();
-  return { paginatedProducts };
-};
+// export const loadUser = async () => {
+//   const paginatedProducts = await fetchProducts();
+//   return { paginatedProducts };
+// };
 
-export const loadProductDetail = async ({ params }: LoaderFunctionArgs) => {
-  const productId = params.productId;
+export const rootLoader = async (): Promise<UserInfo | null> => {
+  const token = localStorage.getItem("jwt_token");
 
-  if (!productId) {
-    throw new Error("Product ID is required");
+  if (!token) return null;
+
+  try {
+    const user = await authService.getUserInfo(token);
+    return user;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
-  const product = await fetchProductById(productId);
-  return { product };
 };
+
+export const usersLoader = async (): Promise<User[]> => {};

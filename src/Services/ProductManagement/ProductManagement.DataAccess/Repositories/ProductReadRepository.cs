@@ -13,28 +13,25 @@ internal class ProductReadRepository(InnoShopContext context, IMapper mapper) : 
 {
     private readonly IMapper _mapper = mapper;
 
-    public async Task<PaginatedList<ProductDto>> GetPaginatedProductDtosAsync(int pageNumber, int pageSize, ProductsSortEnum sortBy, SortOrderEnum sortOrder, string? searchString = null, CancellationToken cancellationToken = default)
+    public async Task<PaginatedList<ProductDto>> GetPaginatedProductDtosAsync(int pageNumber, int pageSize, ProductsSortEnum sortBy, SortOrderEnum sortOrder, string? searchString = null, string? createdBy = null, CancellationToken cancellationToken = default)
     {
         var query = Table.AsNoTracking()
             .Include(t => t.Category)
             .AsQueryable();
-
-        long count;
 
         if (!string.IsNullOrEmpty(searchString))
         {
             query = query.Where(products => products.Name.Contains(searchString) ||
                                                products.Description.Contains(searchString) ||
                                                products.Category.Name.Contains(searchString));
+        }
 
-            count = await query.CountAsync(cancellationToken);
-        }
-        else
+        if (!string.IsNullOrEmpty(createdBy) && Guid.TryParse(createdBy, out var guid))
         {
-            count = await Table
-                .AsNoTracking()
-                .CountAsync(cancellationToken);
+            query = query.Where(p => p.UserId == guid);
         }
+
+        long count = await query.CountAsync(cancellationToken);
 
         query = ApplySorting(query, sortBy, sortOrder);
 

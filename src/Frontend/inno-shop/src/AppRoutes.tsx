@@ -1,37 +1,31 @@
-import {
-  createBrowserRouter,
-  redirect,
-  type ActionFunctionArgs,
-  type LoaderFunctionArgs,
-} from "react-router";
+import { createBrowserRouter } from "react-router";
 import RootLayout from "./components/RootLayout";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailPage from "./pages/ProductDetailPage";
-import { loadProductDetail, loadProducts } from "./loaders/productLoader";
-import { newProductAction } from "./actions/productActions";
+import {
+  createProductLoader,
+  editProductLoader,
+  loadProductDetail,
+  loadProducts,
+} from "./loaders/productLoaders";
+import {
+  createProductAction,
+  deleteProductAction,
+} from "./actions/productActions";
 import CreateProductPage from "./pages/CreateProductPage";
 import LoginPage from "./pages/LoginPage";
 import ErrorPage from "./pages/ErrorPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import authService from "./api/auth";
-import { loginAction, registerAction } from "./actions/authActions";
+import {
+  deleteUserAction,
+  loginAction,
+  logoutAction,
+  registerAction,
+} from "./actions/authActions";
 import RegisterPage from "./pages/RegisterPage";
-
-const protectedLoader = async ({ request }: LoaderFunctionArgs) => {
-  const token = localStorage.getItem("jwt_token");
-
-  if (!token) {
-    return redirect("/login");
-  }
-
-  try {
-    const user = await authService.getProfile();
-    return user;
-  } catch (error) {
-    // If API rejects token, force logout
-    return authService.logout();
-  }
-};
+import EditProductPage from "./pages/EditProductPage";
+import { rootLoader, usersLoader } from "./loaders/authLoaders";
+import UsersPage from "./pages/UsersPage";
 
 const AppRouter = createBrowserRouter([
   {
@@ -39,14 +33,7 @@ const AppRouter = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
-    loader: async () => {
-      try {
-        const user = await authService.getProfile();
-        return user;
-      } catch (error) {
-        return null;
-      }
-    },
+    loader: rootLoader,
     children: [
       {
         index: true,
@@ -54,14 +41,23 @@ const AppRouter = createBrowserRouter([
         loader: loadProducts,
       },
       {
-        path: "product/:productId",
+        path: "products/:productId",
         loader: loadProductDetail,
         Component: ProductDetailPage,
       },
       {
-        path: "product/new",
-        action: newProductAction,
-        loader: protectedLoader,
+        path: "products/:productId/edit",
+        loader: editProductLoader,
+        Component: EditProductPage,
+      },
+      {
+        path: "products/:productId/delete",
+        action: deleteProductAction,
+      },
+      {
+        path: "products/new",
+        action: createProductAction,
+        loader: createProductLoader,
         Component: CreateProductPage,
       },
       {
@@ -71,18 +67,22 @@ const AppRouter = createBrowserRouter([
       },
       {
         path: "logout",
-        action: () => authService.logout(),
+        action: logoutAction,
       },
       {
         path: "register",
         action: registerAction,
         Component: RegisterPage,
       },
-      // {
-      //   path: "users",
-      //   action: loginAction,
-      //   Component: LoginPage,
-      // },
+      {
+        path: "users",
+        loader: usersLoader,
+        Component: UsersPage,
+      },
+      {
+        path: "users/:userId/delete",
+        action: deleteUserAction,
+      },
       {
         path: "*",
         Component: NotFoundPage,

@@ -17,7 +17,6 @@ export const createAxios = (baseUrl: string): AxiosInstance => {
   axiosInstance.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
       const token = localStorage.getItem("jwt_token");
-      //const token = store.commonStore.token;
       if (token) config.headers!.Authorization = `Bearer ${token}`;
       return config;
     },

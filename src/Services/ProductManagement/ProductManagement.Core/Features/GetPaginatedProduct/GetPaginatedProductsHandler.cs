@@ -29,6 +29,7 @@ public class GetPaginatedProductsHandler(IProductReadRepository repository)
             sortByEnum,
             sortOrderEnum,
             request.SearchString,
+            request.CreatedBy,
             cancellationToken);
 
         return paginatedList;

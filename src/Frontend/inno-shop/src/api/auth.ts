@@ -1,6 +1,5 @@
 import { redirect } from "react-router";
 import type {
-  LoginResponse,
   LoginUser,
   RegisterUser,
   User,
@@ -13,20 +12,26 @@ const baseUrl = import.meta.env.VITE_USER_MANAGEMENT;
 const userAgentInstance = createAxios(baseUrl!);
 
 const authService = {
-  async login(request: LoginUser) {
+  login: async (request: LoginUser) => {
     const token = await requests.post<string>(
       userAgentInstance,
       "/auth/login",
       request
     );
-
     localStorage.setItem("jwt_token", token);
 
     return token;
   },
 
-  async getProfile(): Promise<UserInfo> {
-    const token = localStorage.getItem("jwt_token");
+  logout: () => {
+    localStorage.removeItem("jwt_token");
+    return redirect("/login");
+  },
+
+  register: (user: RegisterUser) =>
+    requests.post<User>(userAgentInstance, "/users/register", user),
+
+  getUserInfo: async (token: string): Promise<UserInfo> => {
     const data = await requests.post<UserInfo>(
       userAgentInstance,
       "/auth/user-info",
@@ -35,21 +40,19 @@ const authService = {
     return data;
   },
 
-  logout() {
-    localStorage.removeItem("jwt_token");
-    // Optional: Call API if C# needs to revoke refresh tokens
-    // await api.post("/auth/logout");
-    return redirect("/login");
+  validateToken: async (request: string): Promise<boolean> => {
+    const result = await requests.post<boolean>(
+      userAgentInstance,
+      "/auth/validate-token",
+      request
+    );
+    return result;
   },
-  current: () => requests.get<User>(userAgentInstance, "/users/user"),
-  userInfo: (token: string) =>
-    requests.post<UserInfo>(userAgentInstance, "/users/user-info", {
-      token: token,
-    }),
-  // login: (user: UserFormValues) =>
-  //   requests.post<string>(userAgentInstance, "/auth/login", user),
-  register: (user: RegisterUser) =>
-    requests.post<User>(userAgentInstance, "/users/register", user),
+
+  //current: () => requests.get<User>(userAgentInstance, "/users/user"),
+
+  getUsers: () => console,
+  deleteUser: () => console,
 };
 
 export default authService;

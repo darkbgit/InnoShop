@@ -30,8 +30,8 @@ const Sidebar = () => {
     searchParams.get("searchString") || ""
   );
   const [sortOption, setSortOption] = useState(
-    `${searchParams.get("sortBy") || "CreatedDate"}_${
-      searchParams.get("sortOrder") || "desc"
+    `${searchParams.get("sortBy") || "Name"}_${
+      searchParams.get("sortOrder") || "ascending"
     }`
   );
 
@@ -45,6 +45,7 @@ const Sidebar = () => {
     const { checked } = event.target;
     setOnlyMyProducts(checked);
     const params = new URLSearchParams(searchParams);
+    params.delete("pageNumber");
     if (checked) {
       if (currentUser) {
         params.set("createdBy", currentUser.id);
@@ -74,6 +75,7 @@ const Sidebar = () => {
     const [sortBy, sortOrder] = value.split("_");
 
     const params = new URLSearchParams(searchParams);
+    params.delete("pageNumber");
     params.set("sortBy", sortBy);
     params.set("sortOrder", sortOrder);
     navigate(`/?${params.toString()}`);

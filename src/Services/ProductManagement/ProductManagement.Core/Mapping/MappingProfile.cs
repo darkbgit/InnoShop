@@ -14,6 +14,10 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name))
             .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.UserId));
 
+        CreateMap<Product, ProductDetailDto>()
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name))
+            .ForMember(dest => dest.CreatedBy, opt => opt.MapFrom(src => src.UserId));
+
         CreateMap<CreateProductCommand, Product>()
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.CreatedBy));
 

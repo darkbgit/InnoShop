@@ -23,7 +23,7 @@ public class ProductController(IMediator mediator, IMapper mapper) : ControllerB
 
     [AllowAnonymous]
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetById(long id)
+    public async Task<ActionResult<ProductDetailDto>> GetById(long id)
     {
         var query = new GetProductByIdQuery { Id = id };
         var product = await _mediator.Send(query);
