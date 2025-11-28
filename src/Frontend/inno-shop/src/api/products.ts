@@ -1,4 +1,5 @@
 import type {
+  Category,
   CreateProductRequest,
   PaginatedList,
   Product,
@@ -16,7 +17,7 @@ const productService = {
   getProducts: async (query: ProductQuery) => {
     const response = await requests.get<PaginatedList<ProductForList>>(
       productAgentInstance,
-      "/",
+      "/product",
       {
         params: query,
       }
@@ -27,21 +28,29 @@ const productService = {
   getProductById: async (id: string) => {
     const response = await requests.get<Product>(
       productAgentInstance,
-      `/${id}`
+      `/product/${id}`
     );
     return response;
   },
 
   createProduct: async (product: CreateProductRequest) => {
-    await requests.post<string>(productAgentInstance, "/", product);
+    await requests.post<string>(productAgentInstance, "/product", product);
   },
 
   updateProduct: async (id: string, product: ProductEdit): Promise<void> => {
-    await requests.put<void>(productAgentInstance, `/${id}`, product);
+    await requests.put<void>(productAgentInstance, `/product/${id}`, product);
   },
 
   deleteProduct: async (id: string): Promise<void> => {
-    await requests.delete<void>(productAgentInstance, `/${id}`);
+    await requests.delete<void>(productAgentInstance, `/product/${id}`);
+  },
+
+  getCategories: async (): Promise<Category[]> => {
+    const response = await requests.get<Category[]>(
+      productAgentInstance,
+      "/categories"
+    );
+    return response;
   },
 };
 

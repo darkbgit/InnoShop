@@ -66,3 +66,9 @@ export interface ProductQuery {
   pageNumber: number;
   pageSize: number;
 }
+
+export interface Category {
+  id: number;
+  name: string;
+  description: string;
+}

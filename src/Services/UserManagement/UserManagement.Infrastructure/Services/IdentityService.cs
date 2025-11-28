@@ -1,5 +1,7 @@
+using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -9,17 +11,22 @@ using Shared.Core.Responses;
 using UserManagement.Core.Interfaces;
 using UserManagement.Domain.Entities;
 using UserManagement.Infrastructure.Data;
+using UserManagement.Infrastructure.Interfaces;
 
 namespace UserManagement.Infrastructure.Services;
 
 public class IdentityService(UserManager<ApplicationUser> userManager,
     IJwtTokenService jwtTokenService,
     IMapper mapper,
+    IEmailService emailService,
+    IProductIntegrationService productRestoreService,
     ILogger<IdentityService> logger) : IIdentityService
 {
     private readonly IMapper _mapper = mapper;
     private readonly UserManager<ApplicationUser> _userManager = userManager;
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly IEmailService _emailService = emailService;
+    private readonly IProductIntegrationService _productRestoreService = productRestoreService;
     private readonly ILogger<IdentityService> _logger = logger;
 
     public async Task<UserInfoResponse?> GetUserInfoAsync(string token)
@@ -64,7 +71,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
         return result;
     }
 
-    public async Task<(bool Success, string Error, Guid UserId)> CreateUserAsync(string email, string password)
+    public async Task<(bool Success, string Error, Guid UserId)> RegisterUserAsync(string email, string password)
     {
         var isExist = await _userManager.FindByEmailAsync(email);
 
@@ -92,6 +99,12 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
             return (false, error, Guid.Empty);
         }
+
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+        await SendConfirmationEmail(user, encodedToken);
 
         return (true, string.Empty, user.Id);
     }
@@ -202,5 +215,75 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
         var roles = await _userManager.GetRolesAsync(user);
 
         return [.. roles];
+    }
+
+    public async Task<(bool Success, string[] Errors)> ConfirmEmailAsync(string email, string token, CancellationToken cancellationToken = default)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user == null)
+            return (false, new[] { "User not found" });
+
+        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+
+        var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
+
+        return (result.Succeeded, result.Errors.Select(e => e.Description).ToArray());
+    }
+
+    public async Task<string> GeneratePasswordResetTokenAsync(string email)
+    {
+        var user = await _userManager.FindByEmailAsync(email) ?? throw new Exception("User not found");
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+        return encodedToken;
+    }
+
+    public async Task<(bool Success, string[] Errors)> ResetPasswordAsync(string email, string token, string newPassword, CancellationToken cancellationToken = default)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+
+        if (user == null)
+            return (false, new[] { "Invalid request" });
+
+        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+
+        var result = await _userManager.ResetPasswordAsync(user, decodedToken, newPassword);
+
+        return (result.Succeeded, result.Errors.Select(e => e.Description).ToArray());
+    }
+
+    private async Task SendConfirmationEmail(ApplicationUser user, string token)
+    {
+
+    }
+
+    public async Task<(bool Success, string[] Errors)> RestoreUserAsync(Guid userId, CancellationToken cancellationToken = default)
+    {
+        var user = await _userManager.Users
+            .IgnoreQueryFilters()
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        if (user == null)
+            return (false, new[] { "User not found" });
+
+        user.IsDeleted = false;
+        var dbResult = await _userManager.UpdateAsync(user);
+
+        if (!dbResult.Succeeded)
+            return (false, new[] { "Couldn't restore User" });
+
+        try
+        {
+            await _productRestoreService.RestoreProductsForUserAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex.Message);
+        }
+
+        return (true, []);
     }
 }

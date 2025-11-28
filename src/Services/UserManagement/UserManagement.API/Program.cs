@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 ServiceCollectionForInfrastructure.RegisterDependencies(builder.Services, builder.Configuration);
 ServiceCollectionForCore.RegisterDependencies(builder.Services);
 
-var reactApp = builder.Configuration["ReactApp"] ?? 
+var reactApp = builder.Configuration["FrontendOptions:Url"] ??
     throw new ArgumentNullException("ReactApp is not configured");
 
 builder.Services.AddCors(options =>
@@ -21,6 +21,9 @@ builder.Services.AddCors(options =>
         policy.AllowAnyMethod().AllowAnyHeader().AllowCredentials().WithOrigins(reactApp);
     });
 });
+
+var jwtKey = builder.Configuration["Jwt:Key"] ??
+    throw new ArgumentNullException("JWT key is not configured");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -35,7 +38,7 @@ builder.Services.AddAuthentication(options =>
         options.TokenValidationParameters = new TokenValidationParameters
         {
             IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateAudience = false,
             ValidateIssuer = false,
             ValidateLifetime = true,

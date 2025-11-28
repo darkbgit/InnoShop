@@ -19,6 +19,7 @@ public static class ServiceCollectionForDataAccess
 
         services.AddScoped<IRepository<Product>, ProductRepository>();
         services.AddScoped<IProductReadRepository, ProductReadRepository>();
+        services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
         services.AddScoped<IReadRepository<Category>, CategoryReadRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
     }

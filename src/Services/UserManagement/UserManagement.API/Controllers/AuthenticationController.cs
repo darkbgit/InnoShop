@@ -48,4 +48,28 @@ public class AuthenticationController(IAuthService authService, IJwtTokenService
 
         return userInfo;
     }
+
+    [HttpGet("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromQuery] string email, [FromQuery] string token)
+    {
+        var result = await _authService.ConfirmEmailAsync(email, token);
+
+        return result ? Ok() : BadRequest();
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+    {
+        await _authService.ForgotPasswordAsync(request.Email);
+
+        return Ok();
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+    {
+        var result = await _authService.ResetPasswordAsync(request.Email, request.Token, request.NewPassword);
+
+        return result ? Ok() : BadRequest();
+    }
 }

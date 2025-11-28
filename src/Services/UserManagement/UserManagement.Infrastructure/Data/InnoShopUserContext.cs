@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace UserManagement.Infrastructure.Data;
 
-public class InnoShopUserContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
+public class InnoShopUserContext(DbContextOptions<InnoShopUserContext> options) : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>(options)
 {
-    public InnoShopUserContext(DbContextOptions<InnoShopUserContext> options)
-            : base(options)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+
+        builder.Entity<ApplicationUser>()
+            .HasQueryFilter(u => !u.IsDeleted);
     }
 }

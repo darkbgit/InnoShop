@@ -1,17 +1,23 @@
 using System.Security.Authentication;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Shared.Core.Responses;
 using UserManagement.Core.Exceptions;
 using UserManagement.Core.Interfaces;
+using UserManagement.Core.Options;
 using UserManagement.Core.Requests;
 
 namespace UserManagement.Core.Services;
 
 public class AuthService(IIdentityService identityService,
-    IJwtTokenService jwtTokenService) : IAuthService
+    IJwtTokenService jwtTokenService,
+    IEmailService emailService,
+    IOptions<FrontendOptions> options) : IAuthService
 {
     private readonly IIdentityService _identityService = identityService;
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly IEmailService _emailService = emailService;
+    private readonly FrontendOptions _frontendOptions = options.Value;
 
     public async Task<string> LoginAsync(LoginRequest request)
     {
@@ -33,7 +39,7 @@ public class AuthService(IIdentityService identityService,
         if (await _identityService.IsEmailExistsAsync(request.Email))
             throw new ServiceException("User with same email already exists.");
 
-        var (Success, Error, _) = await _identityService.CreateUserAsync(request.Email, request.Password);
+        var (Success, Error, _) = await _identityService.RegisterUserAsync(request.Email, request.Password);
 
         if (!Success)
             throw new ServiceException(Error);
@@ -61,5 +67,31 @@ public class AuthService(IIdentityService identityService,
             Roles = [.. await _identityService.GetUserRolesAsync(user.Id)],
         };
         return result;
+    }
+
+    public async Task<bool> ConfirmEmailAsync(string email, string token, CancellationToken cancellationToken = default)
+    {
+        var result = await _identityService.ConfirmEmailAsync(email, token, cancellationToken);
+
+        return result.Success;
+    }
+
+    public async Task ForgotPasswordAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var token = await _identityService.GeneratePasswordResetTokenAsync(email);
+
+        if (token == null)
+            return;
+
+        var resetLink = $"{_frontendOptions.ResetPasswordUrl}?{token}";
+        var body = $"Click here: {resetLink}";
+        await _emailService.SendEmailAsync(email, "Reset password", body, cancellationToken);
+    }
+
+    public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword, CancellationToken cancellationToken = default)
+    {
+        var result = await _identityService.ResetPasswordAsync(email, token, newPassword, cancellationToken);
+
+        return result.Success;
     }
 }

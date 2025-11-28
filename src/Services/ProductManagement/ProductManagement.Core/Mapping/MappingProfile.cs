@@ -26,5 +26,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UpdatedBy));
 
         CreateMap<ProductForUpdateDto, UpdateProductCommand>();
+
+        CreateMap<Category, CategoryDto>();
     }
 }

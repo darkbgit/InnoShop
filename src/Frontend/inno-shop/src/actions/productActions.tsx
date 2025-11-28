@@ -21,7 +21,7 @@ export const createProductAction = async ({ request }: ActionFunctionArgs) => {
 
   try {
     await productService.createProduct(product);
-    return redirect("/");
+    return redirect("/products?status=created");
   } catch (error: any) {
     return { error: "Failed to create product" };
   }
@@ -50,7 +50,7 @@ export const editProductAction = async ({
 
   try {
     await productService.updateProduct(id, product);
-    return redirect("/");
+    return redirect("/products?status=updated");
   } catch (error: any) {
     return { error: "Failed to update product" };
   }
@@ -62,7 +62,7 @@ export const deleteProductAction = async ({ params }: ActionFunctionArgs) => {
 
   try {
     await productService.deleteProduct(id);
-    return null;
+    return redirect("/products?status=deleted");
   } catch (error: any) {
     if (error.response?.status === 403) {
       return {

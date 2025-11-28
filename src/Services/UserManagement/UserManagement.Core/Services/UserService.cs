@@ -75,4 +75,9 @@ public class UserService(IIdentityService identityService,
 
         await _identityService.DeleteUserAsync(userId);
     }
+
+    public async Task RestoreUserAsync(Guid userId)
+    {
+        var result = await _identityService.RestoreUserAsync(userId);
+    }
 }

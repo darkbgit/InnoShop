@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import {
   Link,
+  useLocation,
   useNavigate,
   useRouteLoaderData,
   useSearchParams,
@@ -24,6 +25,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 const Sidebar = () => {
   const currentUser = useRouteLoaderData("root") as UserInfo | null;
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(
@@ -53,20 +55,20 @@ const Sidebar = () => {
     } else {
       params.delete("createdBy");
     }
-    navigate(`/?${params.toString()}`);
+    navigate(`/products/?${params.toString()}`);
   };
 
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams);
     params.set("searchString", searchTerm);
-    navigate(`/?${params.toString()}`);
+    navigate(`/products/?${params.toString()}`);
   };
 
   const handleClearSearch = () => {
     setSearchTerm("");
     const params = new URLSearchParams(searchParams);
     params.delete("searchString");
-    navigate(`/?${params.toString()}`);
+    navigate(`/products/?${params.toString()}`);
   };
 
   const handleSortChange = (event: SelectChangeEvent<string>) => {
@@ -78,7 +80,7 @@ const Sidebar = () => {
     params.delete("pageNumber");
     params.set("sortBy", sortBy);
     params.set("sortOrder", sortOrder);
-    navigate(`/?${params.toString()}`);
+    navigate(`/products/?${params.toString()}`);
   };
 
   const sortOptions = [
@@ -126,7 +128,7 @@ const Sidebar = () => {
             ))}
           </Select>
         </FormControl>
-        {currentUser && (
+        {currentUser && currentUser.roles.includes("User") && (
           <div style={{ display: "flex", alignItems: "center" }}>
             <FormControlLabel
               control={
@@ -138,7 +140,9 @@ const Sidebar = () => {
               label="Only My products"
             ></FormControlLabel>
             <Button>
-              <Link to="products/new">New</Link>
+              <Link to="new" state={{ prevSearch: location.search }}>
+                New
+              </Link>
             </Button>
           </div>
         )}

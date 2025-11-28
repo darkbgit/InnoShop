@@ -7,19 +7,29 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import {
   Form,
   Link,
   useActionData,
   useLoaderData,
+  useLocation,
   useNavigation,
 } from "react-router";
 import { useState } from "react";
-import type { ProductEdit } from "../interfaces/product.interface";
+import type { Category, ProductEdit } from "../interfaces/product.interface";
 
 const EditProductPage = () => {
-  const product = useLoaderData() as ProductEdit;
+  const { product, categories } = useLoaderData() as {
+    product: ProductEdit;
+    categories: Category[];
+  };
+  const location = useLocation();
+  const prevSearch = location.state?.prevSearch || "";
   const navigation = useNavigation();
   const actionData = useActionData() as { error: string } | undefined;
   const isSubmitting = navigation.state === "submitting";
@@ -94,16 +104,23 @@ const EditProductPage = () => {
             disabled={!isOnSale}
             defaultValue={product.salePrice}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="categoryId"
-            label="Category ID"
-            name="categoryId"
-            type="number"
-            defaultValue={product.categoryId}
-          />
+          <FormControl fullWidth>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              fullWidth
+              id="categoryId"
+              name="categoryId"
+              defaultValue={product.categoryId}
+              label="Category"
+            >
+              {categories.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormControlLabel
             control={
               <Checkbox
@@ -137,7 +154,7 @@ const EditProductPage = () => {
             </Button>
             <Button
               component={Link}
-              to="/"
+              to={`/products${prevSearch}`}
               fullWidth
               variant="outlined"
               color="secondary"

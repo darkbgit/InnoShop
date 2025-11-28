@@ -5,15 +5,21 @@ import {
   CardContent,
   Typography,
 } from "@mui/material";
-import type { Product } from "../../interfaces/product.interface";
-import { Link, useFetcher, useRouteLoaderData } from "react-router";
+import type { ProductForList } from "../../interfaces/product.interface";
+import {
+  Link,
+  useFetcher,
+  useLocation,
+  useRouteLoaderData,
+} from "react-router";
 import Price from "../Price/Price";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import type { UserInfo } from "../../interfaces/user.interface";
 
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product }: { product: ProductForList }) => {
   const currentUser = useRouteLoaderData("root") as UserInfo | null;
+  const location = useLocation();
   const isOwner = currentUser && currentUser.id === product.createdBy;
   const fetcher = useFetcher();
   const isDeleting = fetcher.state === "submitting";
@@ -44,7 +50,12 @@ const ProductCard = ({ product }: { product: Product }) => {
             style={{ display: "flex", gap: "10px" }}
           >
             <Button size="small" startIcon={<EditIcon />}>
-              <Link to={`/products/${product.id}/edit`}>Edit</Link>
+              <Link
+                to={`/products/${product.id}/edit`}
+                state={{ prevSearch: location.search }}
+              >
+                Edit
+              </Link>
             </Button>
 
             <fetcher.Form

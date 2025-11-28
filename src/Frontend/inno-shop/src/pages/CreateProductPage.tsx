@@ -7,11 +7,26 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
-import { Form, Link, useActionData, useNavigation } from "react-router";
+import {
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+  useLocation,
+  useNavigation,
+} from "react-router";
 import { useState } from "react";
+import type { Category } from "../interfaces/product.interface";
 
 const CreateProductPage = () => {
+  const categories = useLoaderData() as Category[];
+  const location = useLocation();
+  const prevSearch = location.state?.prevSearch || "";
   const navigation = useNavigation();
   const actionData = useActionData() as { error: string } | undefined;
   const isSubmitting = navigation.state === "submitting";
@@ -81,15 +96,23 @@ const CreateProductPage = () => {
             name="salePrice"
             disabled={!isOnSale}
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="categoryId"
-            label="Category ID"
-            name="categoryId"
-            type="number"
-          />
+          <FormControl fullWidth>
+            <InputLabel id="category-label">Category</InputLabel>
+            <Select
+              labelId="category-label"
+              fullWidth
+              id="categoryId"
+              name="categoryId"
+              defaultValue=""
+              label="Category"
+            >
+              {categories.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormControlLabel
             control={
               <Checkbox
@@ -123,7 +146,7 @@ const CreateProductPage = () => {
             </Button>
             <Button
               component={Link}
-              to="/"
+              to={`/products${prevSearch}`}
               fullWidth
               variant="outlined"
               color="secondary"

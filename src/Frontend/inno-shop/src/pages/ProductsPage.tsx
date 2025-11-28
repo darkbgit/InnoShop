@@ -1,11 +1,14 @@
 import { useLoaderData, useSearchParams } from "react-router";
 import { loadProducts } from "../loaders/productLoaders";
-import { Pagination, Stack } from "@mui/material";
+import { Alert, Pagination, Snackbar, Stack } from "@mui/material";
 import Sidebar from "../components/Sidebar/Sidebar";
 import Products from "../components/Products/Products";
+import { useEffect, useState } from "react";
 
 const ProductsPage = () => {
   const paginatedProducts = useLoaderData<typeof loadProducts>();
+  const products = paginatedProducts.items;
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handlePageChange = (
@@ -18,7 +21,36 @@ const ProductsPage = () => {
     });
   };
 
-  const products = paginatedProducts.items;
+  const [openToast, setOpenToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const cleanUrl = () => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete("status");
+    setSearchParams(newParams, { replace: true });
+  };
+
+  useEffect(() => {
+    const status = searchParams.get("status");
+
+    if (status === "updated") {
+      setToastMessage("Product successfully updated!");
+      setOpenToast(true);
+      cleanUrl();
+    } else if (status === "created") {
+      setToastMessage("Product successfully created!");
+      setOpenToast(true);
+      cleanUrl();
+    } else if (status === "deleted") {
+      setToastMessage("Product successfully deleted!");
+      setOpenToast(true);
+      cleanUrl();
+    }
+  }, [searchParams]);
+
+  const handleClose = () => {
+    setOpenToast(false);
+  };
 
   return (
     <>
@@ -33,6 +65,21 @@ const ProductsPage = () => {
           />
         </Stack>
       )}
+      <Snackbar
+        open={openToast}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {toastMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

@@ -40,6 +40,7 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
 
 export const logoutAction = () => {
   authService.logout();
+  return redirect("/");
 };
 
 export const deleteUserAction = async ({ params }: ActionFunctionArgs) => {
@@ -49,3 +50,5 @@ export const deleteUserAction = async ({ params }: ActionFunctionArgs) => {
   await userService.deleteUser(params.userId);
   return redirect("/users");
 };
+
+export const resetPasswordAction = async () => {};

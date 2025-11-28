@@ -22,11 +22,14 @@ import {
   loginAction,
   logoutAction,
   registerAction,
+  resetPasswordAction,
 } from "./actions/authActions";
 import RegisterPage from "./pages/RegisterPage";
 import EditProductPage from "./pages/EditProductPage";
 import { rootLoader, usersLoader } from "./loaders/authLoaders";
 import UsersPage from "./pages/UsersPage";
+import HomePage from "./pages/HomePage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 const AppRouter = createBrowserRouter([
   {
@@ -38,6 +41,10 @@ const AppRouter = createBrowserRouter([
     children: [
       {
         index: true,
+        Component: HomePage,
+      },
+      {
+        path: "products",
         Component: ProductsPage,
         loader: loadProducts,
       },
@@ -84,6 +91,11 @@ const AppRouter = createBrowserRouter([
       {
         path: "users/:userId/delete",
         action: deleteUserAction,
+      },
+      {
+        path: "password/reset",
+        action: resetPasswordAction,
+        Component: ResetPasswordPage,
       },
       {
         path: "*",

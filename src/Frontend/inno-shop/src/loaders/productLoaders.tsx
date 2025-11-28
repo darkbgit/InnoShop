@@ -53,6 +53,10 @@ export const createProductLoader = async () => {
   } catch {
     return authService.logout();
   }
+
+  const categories = productService.getCategories();
+
+  return categories;
 };
 
 export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
@@ -71,9 +75,10 @@ export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
     return authService.logout();
   }
 
-  const [user, product] = await Promise.all([
+  const [user, product, categories] = await Promise.all([
     authService.getUserInfo(token),
     productService.getProductById(id),
+    productService.getCategories(),
   ]);
 
   if (user.id !== product.createdBy) throw new Response("", { status: 403 });
@@ -88,5 +93,5 @@ export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
     salePrice: product.salePrice,
     categoryId: product.categoryId,
   };
-  return productEdit;
+  return { product: productEdit, categories: categories };
 };
