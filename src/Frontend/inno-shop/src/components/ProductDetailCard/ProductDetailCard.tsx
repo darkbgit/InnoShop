@@ -1,18 +1,26 @@
-import type { ProductDetail } from "../../interfaces/product.interface";
+import type { Product } from "../../interfaces/product.interface";
 import Price from "../Price/Price";
+import { Box, Typography } from "@mui/material";
 
-const ProductDetailCard = ({ product }: { product: ProductDetail }) => {
+const ProductDetailCard = ({ product }: { product: Product }) => {
   return (
-    <div>
-      <p>{product.categoryName}</p>
-      <h2>{product.name}</h2>
-      <p>{product.longDescription}</p>
+    <Box>
+      <Typography variant="body2" color="text.secondary">
+        Category:{product.categoryName}
+      </Typography>
+      <Typography gutterBottom variant="h5" component="div">
+        {product.name}
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        {product.description}
+      </Typography>
       <Price
         price={product.price}
         isOnSale={product.isOnSale}
         salePrice={product.salePrice}
+        isAvailable={product.isAvailable}
       />
-    </div>
+    </Box>
   );
 };
 

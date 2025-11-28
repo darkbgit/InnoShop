@@ -40,19 +40,14 @@ const authService = {
     return data;
   },
 
-  validateToken: async (request: string): Promise<boolean> => {
+  validateToken: async (token: string): Promise<boolean> => {
     const result = await requests.post<boolean>(
       userAgentInstance,
       "/auth/validate-token",
-      request
+      { token: token }
     );
     return result;
   },
-
-  //current: () => requests.get<User>(userAgentInstance, "/users/user"),
-
-  getUsers: () => console,
-  deleteUser: () => console,
 };
 
 export default authService;

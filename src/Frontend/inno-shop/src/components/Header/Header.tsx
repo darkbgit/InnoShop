@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import LoginMenu from "../LoginMenu/LoginMenu";
 import { Link, useRouteLoaderData } from "react-router";
 import type { UserInfo } from "../../interfaces/user.interface";
@@ -10,8 +10,9 @@ const Header = () => {
       <Box p={2}>
         <nav style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <Link to="/">Home</Link>
-          {user && user.roles.includes("admin") && (
-            <Typography>{user.email}</Typography>
+          <Link to="/products">Products</Link>
+          {user && user.roles.includes("Admin") && (
+            <Link to="/users">Users</Link>
           )}
           <LoginMenu />
         </nav>

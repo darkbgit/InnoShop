@@ -15,7 +15,7 @@ export const ProductDetailPage = () => {
   const navigate = useNavigate();
   const { currentPage } = location.state || {};
   const { productId } = useParams<{ productId: string }>();
-  const { product } = useLoaderData<typeof loadProductDetail>();
+  const product = useLoaderData<typeof loadProductDetail>();
   if (!product) {
     return <div>Loading...</div>;
   }

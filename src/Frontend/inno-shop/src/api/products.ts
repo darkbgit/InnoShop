@@ -2,8 +2,8 @@ import type {
   CreateProductRequest,
   PaginatedList,
   Product,
-  ProductDetail,
   ProductEdit,
+  ProductForList,
   ProductQuery,
 } from "../interfaces/product.interface";
 import { createAxios, requests } from "./agentFactory";
@@ -14,7 +14,7 @@ const productAgentInstance = createAxios(baseUrl!);
 
 const productService = {
   getProducts: async (query: ProductQuery) => {
-    const response = await requests.get<PaginatedList<Product>>(
+    const response = await requests.get<PaginatedList<ProductForList>>(
       productAgentInstance,
       "/",
       {
@@ -25,7 +25,7 @@ const productService = {
   },
 
   getProductById: async (id: string) => {
-    const response = await requests.get<ProductDetail>(
+    const response = await requests.get<Product>(
       productAgentInstance,
       `/${id}`
     );

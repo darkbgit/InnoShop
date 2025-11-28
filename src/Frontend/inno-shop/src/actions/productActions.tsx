@@ -1,31 +1,33 @@
-import {
-  redirect,
-  useRouteLoaderData,
-  type ActionFunctionArgs,
-} from "react-router";
+import { redirect, type ActionFunctionArgs } from "react-router";
 import productService from "../api/products";
 import type {
   CreateProductRequest,
   ProductEdit,
 } from "../interfaces/product.interface";
-import type { UserInfo } from "../interfaces/user.interface";
-import authService from "../api/auth";
 
 export const createProductAction = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
 
   const product: CreateProductRequest = {
-    name: "",
+    name: formData.get("name") as string,
+    summary: formData.get("summary") as string,
+    description: formData.get("description") as string,
+    price: parseFloat(formData.get("price") as string),
+    isAvailable: formData.get("isAvailable") === "on",
+    isOnSale: formData.get("isOnSale") === "on",
+    salePrice: parseFloat(formData.get("salePrice") as string) || 0,
+    categoryId: parseInt(formData.get("categoryId") as string),
   };
+
   try {
     await productService.createProduct(product);
-    return redirect("/products");
+    return redirect("/");
   } catch (error: any) {
-    return error;
+    return { error: "Failed to create product" };
   }
 };
 
-export const updateProductAction = async ({
+export const editProductAction = async ({
   request,
   params,
 }: ActionFunctionArgs) => {
@@ -35,13 +37,21 @@ export const updateProductAction = async ({
   const formData = await request.formData();
 
   const product: ProductEdit = {
-    name: "",
+    id: parseInt(id),
+    name: formData.get("name") as string,
+    summary: formData.get("summary") as string,
+    description: formData.get("description") as string,
+    price: parseFloat(formData.get("price") as string),
+    isAvailable: formData.get("isAvailable") === "on",
+    isOnSale: formData.get("isOnSale") === "on",
+    salePrice: parseFloat(formData.get("salePrice") as string) || 0,
+    categoryId: parseInt(formData.get("categoryId") as string),
   };
 
   try {
-    productService.updateProduct(id, product);
+    await productService.updateProduct(id, product);
     return redirect("/");
-  } catch {
+  } catch (error: any) {
     return { error: "Failed to update product" };
   }
 };
@@ -53,7 +63,13 @@ export const deleteProductAction = async ({ params }: ActionFunctionArgs) => {
   try {
     await productService.deleteProduct(id);
     return null;
-  } catch {
+  } catch (error: any) {
+    if (error.response?.status === 403) {
+      return {
+        error: "Permission denied. You did not create this product.",
+      };
+    }
+
     return { error: "Failed to delete product" };
   }
 };

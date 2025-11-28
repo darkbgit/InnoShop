@@ -1,7 +1,7 @@
-export interface Product {
+export interface ProductForList {
   id: number;
   name: string;
-  description: string;
+  summary: string;
   price: number;
   isAvailable: boolean;
   isOnSale: boolean;
@@ -11,11 +11,13 @@ export interface Product {
   createdBy: string;
 }
 
-export interface ProductDetail {
+export interface Product {
   id: number;
   name: string;
-  longDescription: string;
+  summary: string;
+  description: string;
   price: number;
+  isAvailable: boolean;
   isOnSale: boolean;
   salePrice: number;
   createdAt: Date;
@@ -26,13 +28,24 @@ export interface ProductDetail {
 export interface ProductEdit {
   id: number;
   name: string;
+  summary: string;
   description: string;
-  longDescription: string;
   price: number;
   isAvailable: boolean;
   isOnSale: boolean;
   salePrice: number;
-  categoryName: string;
+  categoryId: number;
+}
+
+export interface CreateProductRequest {
+  name: string;
+  summary: string;
+  description: string;
+  price: number;
+  isAvailable: boolean;
+  isOnSale: boolean;
+  salePrice: number;
+  categoryId: number;
 }
 
 export interface PaginatedList<T> {
@@ -52,8 +65,4 @@ export interface ProductQuery {
   createdBy?: string;
   pageNumber: number;
   pageSize: number;
-}
-
-export interface CreateProductRequest {
-  name: string;
 }

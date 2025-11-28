@@ -1,5 +1,8 @@
+import { redirect, type LoaderFunctionArgs } from "react-router";
 import authService from "../api/auth";
-import type { UserInfo } from "../interfaces/user.interface";
+import userService from "../api/users";
+import type { PaginatedList } from "../interfaces/product.interface";
+import type { User, UserInfo, UsersQuery } from "../interfaces/user.interface";
 
 // export const loadUser = async () => {
 //   const paginatedProducts = await fetchProducts();
@@ -20,4 +23,24 @@ export const rootLoader = async (): Promise<UserInfo | null> => {
   }
 };
 
-export const usersLoader = async (): Promise<User[]> => {};
+export const usersLoader = async ({
+  request,
+}: LoaderFunctionArgs): Promise<PaginatedList<User> | Response> => {
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
+  const query: UsersQuery = {
+    pageNumber: Number(searchParams.get("pageNumber") || "1"),
+    pageSize: Number(searchParams.get("pageSize") || "5"),
+    searchString: searchParams.get("searchString") || undefined,
+    sortBy: searchParams.get("sortBy") || undefined,
+    sortOrder: searchParams.get("sortOrder") || undefined,
+  };
+  const result = await userService.getUsers(query);
+
+  if (result.totalPages > 0 && result.currentPage > result.totalPages) {
+    url.searchParams.set("pageNumber", result.totalPages.toString());
+    return redirect(url.toString());
+  }
+
+  return result;
+};

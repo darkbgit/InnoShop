@@ -1,9 +1,16 @@
 import { redirect, type LoaderFunctionArgs } from "react-router";
 import productService from "../api/products";
-import type { ProductQuery } from "../interfaces/product.interface";
+import type {
+  PaginatedList,
+  Product,
+  ProductForList,
+  ProductQuery,
+} from "../interfaces/product.interface";
 import authService from "../api/auth";
 
-export const loadProducts = async ({ request }: LoaderFunctionArgs) => {
+export const loadProducts = async ({
+  request,
+}: LoaderFunctionArgs): Promise<PaginatedList<ProductForList> | Response> => {
   const url = new URL(request.url);
   const searchParams = url.searchParams;
   const query: ProductQuery = {
@@ -24,13 +31,15 @@ export const loadProducts = async ({ request }: LoaderFunctionArgs) => {
   return result;
 };
 
-export const loadProductDetail = async ({ params }: LoaderFunctionArgs) => {
+export const loadProductDetail = async ({
+  params,
+}: LoaderFunctionArgs): Promise<Product> => {
   const productId = params.productId;
   if (!productId) {
     throw new Error("Product ID is required");
   }
   const product = await productService.getProductById(productId);
-  return { product };
+  return product;
 };
 
 export const createProductLoader = async () => {
@@ -68,12 +77,16 @@ export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
   ]);
 
   if (user.id !== product.createdBy) throw new Response("", { status: 403 });
-
-  return product;
-  // try {
-  //   const product = await productService.getProductById(id);
-  //   return product;
-  // } catch (error) {
-  //   return error;
-  // }
+  const productEdit = {
+    id: product.id,
+    name: product.name,
+    summary: product.summary,
+    description: product.description,
+    price: product.price,
+    isAvailable: product.isAvailable,
+    isOnSale: product.isOnSale,
+    salePrice: product.salePrice,
+    categoryId: product.categoryId,
+  };
+  return productEdit;
 };

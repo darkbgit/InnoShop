@@ -10,6 +10,8 @@ public class ProductForCreateDto
     public string Description { get; set; } = string.Empty;
     [Required]
     public decimal Price { get; set; }
+    [Required]
+    public string Summary { get; set; } = string.Empty;
     public bool IsAvailable { get; set; }
     public bool IsOnSale { get; set; }
     public decimal SalePrice { get; set; }

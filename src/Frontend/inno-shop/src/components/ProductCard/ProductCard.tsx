@@ -24,14 +24,16 @@ const ProductCard = ({ product }: { product: Product }) => {
           {product.name}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {product.description}
+          {product.summary}
         </Typography>
         <Price
           price={product.price}
           salePrice={product.salePrice}
           isOnSale={product.isOnSale}
+          isAvailable={product.isAvailable}
         />
       </CardContent>
+
       <CardActions>
         <Button size="small">
           <Link to={`/products/${product.id}`}>Show more</Link>

@@ -138,7 +138,7 @@ const Sidebar = () => {
               label="Only My products"
             ></FormControlLabel>
             <Button>
-              <Link to="product/new">New</Link>
+              <Link to="products/new">New</Link>
             </Button>
           </div>
         )}

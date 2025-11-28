@@ -11,6 +11,7 @@ import {
 import {
   createProductAction,
   deleteProductAction,
+  editProductAction,
 } from "./actions/productActions";
 import CreateProductPage from "./pages/CreateProductPage";
 import LoginPage from "./pages/LoginPage";
@@ -48,6 +49,7 @@ const AppRouter = createBrowserRouter([
       {
         path: "products/:productId/edit",
         loader: editProductLoader,
+        action: editProductAction,
         Component: EditProductPage,
       },
       {

@@ -17,6 +17,7 @@ internal class ProductReadRepository(InnoShopContext context, IMapper mapper) : 
     {
         var query = Table.AsNoTracking()
             .Include(t => t.Category)
+            .Where(p => !p.IsDeleted)
             .AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
@@ -61,14 +62,15 @@ internal class ProductReadRepository(InnoShopContext context, IMapper mapper) : 
 
     private static IQueryable<Product> ApplySorting(IQueryable<Product> query, ProductsSortEnum sort, SortOrderEnum order)
     {
+        var sortQuery = query.OrderByDescending(p => p.IsAvailable);
         query = sort switch
         {
-            ProductsSortEnum.Name when order == SortOrderEnum.Ascending => query.OrderBy(q => q.Name),
-            ProductsSortEnum.Name when order == SortOrderEnum.Descending => query.OrderByDescending(q => q.Name),
-            ProductsSortEnum.Price when order == SortOrderEnum.Ascending => query.OrderBy(c => c.Price),
-            ProductsSortEnum.Price when order == SortOrderEnum.Descending => query.OrderByDescending(c => c.Price),
-            ProductsSortEnum.CreatedDate when order == SortOrderEnum.Ascending => query.OrderBy(c => c.CreatedAt),
-            ProductsSortEnum.CreatedDate when order == SortOrderEnum.Descending => query.OrderByDescending(c => c.CreatedAt),
+            ProductsSortEnum.Name when order == SortOrderEnum.Ascending => sortQuery.ThenBy(q => q.Name),
+            ProductsSortEnum.Name when order == SortOrderEnum.Descending => sortQuery.ThenByDescending(q => q.Name),
+            ProductsSortEnum.Price when order == SortOrderEnum.Ascending => sortQuery.ThenBy(c => c.Price),
+            ProductsSortEnum.Price when order == SortOrderEnum.Descending => sortQuery.ThenByDescending(c => c.Price),
+            ProductsSortEnum.CreatedDate when order == SortOrderEnum.Ascending => sortQuery.ThenBy(c => c.CreatedAt),
+            ProductsSortEnum.CreatedDate when order == SortOrderEnum.Descending => sortQuery.ThenByDescending(c => c.CreatedAt),
             _ => query.OrderBy(c => c.Name)
         };
 

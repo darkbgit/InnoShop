@@ -1,5 +1,6 @@
 import { redirect, type ActionFunctionArgs } from "react-router";
 import authService from "../api/auth";
+import userService from "../api/users";
 import type { LoginUser, RegisterUser } from "../interfaces/user.interface";
 
 export const loginAction = async ({ request }: ActionFunctionArgs) => {
@@ -41,4 +42,10 @@ export const logoutAction = () => {
   authService.logout();
 };
 
-export const deleteUserAction = () => {};
+export const deleteUserAction = async ({ params }: ActionFunctionArgs) => {
+  if (!params.userId) {
+    throw new Response("User ID not found", { status: 404 });
+  }
+  await userService.deleteUser(params.userId);
+  return redirect("/users");
+};

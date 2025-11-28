@@ -29,18 +29,17 @@ public static class SeedDatabase
         {
             var products = new List<Product>
             {
-                new() { Name = "Smartphone", Description = "Latest model smartphone", Price = 699.99m, CategoryId = 1, UserId = user1Id },
-                new() { Name = "Laptop", Description = "High performance laptop", Price = 1299.99m, CategoryId = 1, UserId = user1Id },
-                new() { Name = "Novel", Description = "Bestselling fiction novel", Price = 19.99m, CategoryId = 2, UserId = user2Id },
-                new() { Name = "T-Shirt", Description = "100% cotton t-shirt", Price = 9.99m, CategoryId = 3, UserId = user3Id },
-                new() { Name = "Jeans", Description = "Comfortable denim jeans", Price = 49.99m, CategoryId = 3, UserId = user3Id },
-                new() { Name = "E-Reader", Description = "Portable e-reader device", Price = 129.99m, CategoryId = 1, UserId = user2Id },
-                new() { Name = "Science Fiction Book", Description = "A thrilling sci-fi adventure", Price = 14.99m, CategoryId = 2, UserId = user2Id },
-                new() { Name = "Jacket", Description = "Waterproof outdoor jacket", Price = 89.99m, CategoryId = 3, UserId = user3Id },
-                new() { Name = "Headphones", Description = "Noise-canceling headphones", Price = 149.99m, CategoryId = 1, UserId = user1Id },
-                new() { Name = "Cookbook", Description = "Delicious recipes from around the world", Price = 24.99m, CategoryId = 2, UserId = user2Id },
-                new() { Name = "Sweater", Description = "Warm and comfortable sweater", Price = 39.99m, CategoryId = 3, UserId = user3Id },
-
+                new() { Name = "Smartphone", Summary = "Latest model smartphone", Description = "High-end smartphone with advanced features", Price = 699.99m,  IsAvailable = true, IsOnSale = true, SalePrice = 599.99m, CategoryId = 1, UserId = user1Id },
+                new() { Name = "Laptop", Summary = "High performance laptop", Description = "Powerful laptop for work and gaming", Price = 1299.99m, IsAvailable = true, CategoryId = 1, UserId = user1Id },
+                new() { Name = "Novel", Summary = "Bestselling fiction novel", Description = "A captivating story that keeps you hooked", Price = 19.99m, CategoryId = 2, UserId = user2Id },
+                new() { Name = "T-Shirt", Summary = "100% cotton t-shirt", Description = "Comfortable and breathable fabric", Price = 9.99m, CategoryId = 3, UserId = user3Id },
+                new() { Name = "Jeans", Summary = "Comfortable denim jeans", Description = "Stylish and durable denim jeans", Price = 49.99m, CategoryId = 3, UserId = user3Id },
+                new() { Name = "E-Reader", Summary = "Portable e-reader device", Description = "Read your favorite books on the go", Price = 129.99m, CategoryId = 1, UserId = user2Id },
+                new() { Name = "Science Fiction Book", Summary = "Exciting sci-fi novel", Description = "A thrilling sci-fi adventure", Price = 14.99m, CategoryId = 2, UserId = user2Id },
+                new() { Name = "Jacket", Summary = "Waterproof outdoor jacket", Description = "Waterproof outdoor jacket", Price = 89.99m, CategoryId = 3, UserId = user3Id },
+                new() { Name = "Headphones", Summary = "Noise-canceling headphones", Description = "Noise-canceling headphones", Price = 149.99m, CategoryId = 1, UserId = user1Id },
+                new() { Name = "Cookbook", Summary = "Delicious recipes from around the world", Description = "Delicious recipes from around the world", Price = 24.99m, CategoryId = 2, UserId = user2Id },
+                new() { Name = "Sweater", Summary = "Warm and comfortable sweater", Description = "Warm and comfortable sweater", Price = 39.99m, CategoryId = 3, UserId = user3Id },
             };
             await context.Products.AddRangeAsync(products);
             await context.SaveChangesAsync();

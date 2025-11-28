@@ -67,18 +67,21 @@ public class ProductController(IMediator mediator, IMapper mapper) : ControllerB
         return CreatedAtAction(nameof(GetById), new { id = result }, null);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> Update(long id, ProductForUpdateDto product)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(long id, [FromBody]ProductForUpdateDto product)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var currentUserId = Guid.NewGuid(); //TODO: Get from auth context
+        var currentUserId = HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(currentUserId, out var guidCurrentUserId))
+        {
+            return Forbid();
+        }
 
         var command = _mapper.Map<UpdateProductCommand>(product);
         command.Id = id;
-        command.UpdatedBy = currentUserId;
-
+        command.UpdatedBy = guidCurrentUserId;
         await _mediator.Send(command);
 
         return NoContent();

@@ -10,9 +10,11 @@ interface props {
   price: number;
   salePrice: number;
   isOnSale: boolean;
+  isAvailable: boolean;
 }
 
-const Price = ({ price, salePrice, isOnSale }: props) => {
+const Price = ({ price, salePrice, isOnSale, isAvailable }: props) => {
+  if (!isAvailable) return <Typography>Not available</Typography>;
   if (!isOnSale) return <Typography>{price} $</Typography>;
   else
     return (

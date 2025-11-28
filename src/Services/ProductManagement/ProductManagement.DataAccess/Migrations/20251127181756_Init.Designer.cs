@@ -12,7 +12,7 @@ using ProductManagement.DataAccess.Data;
 namespace ProductManagement.DataAccess.Migrations
 {
     [DbContext(typeof(InnoShopContext))]
-    [Migration("20251109094408_Init")]
+    [Migration("20251127181756_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace ProductManagement.DataAccess.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -82,6 +82,10 @@ namespace ProductManagement.DataAccess.Migrations
 
                     b.Property<decimal>("SalePrice")
                         .HasColumnType("numeric");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");

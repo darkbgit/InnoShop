@@ -52,14 +52,13 @@ public class UserService(IIdentityService identityService,
     {
         var users = await _identityService.GetUsersAsync(pageNumber, pageSize, cancellationToken);
 
-        var usersWithRoles = await Task.WhenAll(users.Items
-            .Select(async user =>
-            {
-                var dto = _mapper.Map<UserWithRolesDto>(user);
-                dto.Roles = await _identityService.GetUserRolesAsync(user.Id);
-                return dto;
-            })
-            .ToList()).WaitAsync(cancellationToken);
+        var usersWithRoles = new List<UserWithRolesDto>();
+        foreach (var user in users.Items)
+        {
+            var dto = _mapper.Map<UserWithRolesDto>(user);
+            dto.Roles = await _identityService.GetUserRolesAsync(user.Id);
+            usersWithRoles.Add(dto);
+        }
 
         var result = new PaginatedList<UserWithRolesDto>(usersWithRoles,
             users.TotalCount,
