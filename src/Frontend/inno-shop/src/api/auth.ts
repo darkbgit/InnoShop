@@ -1,7 +1,9 @@
 import { redirect } from "react-router";
 import type {
+  ConfirmEmailRequest,
   LoginUser,
   RegisterUser,
+  ResetPasswordRequest,
   User,
   UserInfo,
 } from "../interfaces/user.interface";
@@ -48,6 +50,15 @@ const authService = {
     );
     return result;
   },
+
+  forgotPassword: (email: string) =>
+    requests.post(userAgentInstance, "/auth/forgot-password", { email }),
+
+  resetPassword: (request: ResetPasswordRequest) =>
+    requests.post(userAgentInstance, "/auth/password/reset", request),
+
+  confirmEmail: (request: ConfirmEmailRequest) =>
+    requests.post(userAgentInstance, "/auth/confirm-email", request),
 };
 
 export default authService;

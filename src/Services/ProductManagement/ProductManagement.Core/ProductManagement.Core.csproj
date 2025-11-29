@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DeleteProductsByUserId\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
 

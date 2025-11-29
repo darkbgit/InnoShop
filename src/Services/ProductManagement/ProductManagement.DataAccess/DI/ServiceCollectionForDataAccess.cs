@@ -18,6 +18,7 @@ public static class ServiceCollectionForDataAccess
             options.UseNpgsql(connectionString));
 
         services.AddScoped<IRepository<Product>, ProductRepository>();
+        services.AddScoped<IProductRepository, ProductRepository>();
         services.AddScoped<IProductReadRepository, ProductReadRepository>();
         services.AddScoped<ICategoryReadRepository, CategoryReadRepository>();
         services.AddScoped<IReadRepository<Category>, CategoryReadRepository>();

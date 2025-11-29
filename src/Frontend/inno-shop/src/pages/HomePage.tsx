@@ -1,16 +1,26 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Container, Paper } from "@mui/material";
 
 const HomePage = () => {
   return (
-    <Box alignContent={"center"}>
-      <Typography>Welcome to InnoShop!</Typography>
-      <p>When unauthorized you can view all products.</p>
-      <p>
-        When log in as user you can create new product and edit products created
-        by user.
-      </p>
-      <p>When log in as admin you can delete users.</p>
-    </Box>
+    <Container maxWidth="md">
+      <Box sx={{ my: 4, textAlign: "center" }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Welcome to InnoShop!
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            This is a simple application where you can browse products.
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            If you log in as a regular user, you can make products and edit or
+            delete your products.
+          </Typography>
+          <Typography variant="body1">
+            If you log in as an admin, you can delete users.
+          </Typography>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 

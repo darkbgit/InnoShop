@@ -78,6 +78,6 @@ public class UserService(IIdentityService identityService,
 
     public async Task RestoreUserAsync(Guid userId)
     {
-        var result = await _identityService.RestoreUserAsync(userId);
+        await _identityService.RestoreUserAsync(userId);
     }
 }

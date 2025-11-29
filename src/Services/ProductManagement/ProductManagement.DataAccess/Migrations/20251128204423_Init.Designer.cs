@@ -12,7 +12,7 @@ using ProductManagement.DataAccess.Data;
 namespace ProductManagement.DataAccess.Migrations
 {
     [DbContext(typeof(InnoShopContext))]
-    [Migration("20251127181756_Init")]
+    [Migration("20251128204423_Init")]
     partial class Init
     {
         /// <inheritdoc />

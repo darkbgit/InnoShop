@@ -28,33 +28,27 @@ export const createAxios = (baseUrl: string): AxiosInstance => {
       return response;
     },
     (error: AxiosError) => {
-      const { data, status } = error.response!;
+      if (!error.response) {
+        return Promise.reject(error);
+      }
+      const { data, status } = error.response as AxiosResponse;
       switch (status) {
-        // case 400:
-        //   if (data.errors) {
-        //     const modalStateErrors = [];
-        //     for (const key in data.errors) {
-        //       if (data.errors[key]) {
-        //         modalStateErrors.push(data.errors[key]);
-        //       }
-        //     }
-        //   }
-        //   break;
+        case 400:
+          if (data && data.errors) {
+            const modelStateErrors: string[] = [];
+            for (const key in data.errors) {
+              if (data.errors[key]) {
+                modelStateErrors.push(data.errors[key]);
+              }
+            }
+            throw modelStateErrors.flat();
+          }
+          break;
         case 401:
           localStorage.removeItem("jwt_token");
           break;
-        // case 403:
-        //   toast.error("forbidden");
-        //   break;
-        // case 404:
-        //   history.push("/404");
-        //   break;
-        // case 500:
-        //   toast.error(data.message);
-        //   break;
-        // default:
-        //   toast.error(error.message);
-        //   break;
+        default:
+          break;
       }
 
       return Promise.reject(error);

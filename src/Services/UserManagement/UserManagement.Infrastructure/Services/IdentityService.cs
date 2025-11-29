@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Shared.Core.Exceptions;
 using Shared.Core.Models;
 using Shared.Core.Responses;
 using UserManagement.Core.Interfaces;
+using UserManagement.Core.Options;
 using UserManagement.Domain.Entities;
 using UserManagement.Infrastructure.Data;
 using UserManagement.Infrastructure.Interfaces;
@@ -20,6 +22,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
     IMapper mapper,
     IEmailService emailService,
     IProductIntegrationService productRestoreService,
+    IOptions<FrontendOptions> options,
     ILogger<IdentityService> logger) : IIdentityService
 {
     private readonly IMapper _mapper = mapper;
@@ -27,6 +30,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
     private readonly IEmailService _emailService = emailService;
     private readonly IProductIntegrationService _productRestoreService = productRestoreService;
+    private readonly FrontendOptions _frontendOptions = options.Value;
     private readonly ILogger<IdentityService> _logger = logger;
 
     public async Task<UserInfoResponse?> GetUserInfoAsync(string token)
@@ -194,7 +198,9 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
         var appUser = await _userManager.FindByIdAsync(userId.ToString())
             ?? throw new NotFoundException("User not found.");
 
-        var result = await _userManager.DeleteAsync(appUser);
+        appUser.IsDeleted = true;
+
+        var result = await _userManager.UpdateAsync(appUser);
 
         if (!result.Succeeded)
         {
@@ -202,6 +208,15 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
             _logger.LogError("Failed to delete user {UserId}. Errors: {Errors}", userId, errors);
 
             return false;
+        }
+
+        try
+        {
+            await _productRestoreService.DeleteProductsForUserAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex.Message);
         }
 
         return true;
@@ -257,7 +272,10 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
     private async Task SendConfirmationEmail(ApplicationUser user, string token)
     {
-
+        var link = $"{_frontendOptions.Url}/confirm-email?email={user.Email}&token={token}";
+        await _emailService.SendEmailAsync(user.Email!,
+            "Confirm your email",
+            $"Please confirm your account by clicking this link: {link}");
     }
 
     public async Task<(bool Success, string[] Errors)> RestoreUserAsync(Guid userId, CancellationToken cancellationToken = default)

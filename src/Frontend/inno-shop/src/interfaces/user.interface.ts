@@ -33,3 +33,14 @@ export interface UsersQuery {
   sortBy?: string;
   sortOrder?: string;
 }
+
+export interface ResetPasswordRequest {
+  token: string;
+  password: string;
+  email: string;
+}
+
+export interface ConfirmEmailRequest {
+  userId: string;
+  token: string;
+}

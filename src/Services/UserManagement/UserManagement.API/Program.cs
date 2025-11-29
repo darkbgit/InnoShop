@@ -9,7 +9,7 @@ using UserManagement.Infrastructure.DI;
 var builder = WebApplication.CreateBuilder(args);
 
 ServiceCollectionForInfrastructure.RegisterDependencies(builder.Services, builder.Configuration);
-ServiceCollectionForCore.RegisterDependencies(builder.Services);
+ServiceCollectionForCore.RegisterDependencies(builder.Services, builder.Configuration);
 
 var reactApp = builder.Configuration["FrontendOptions:Url"] ??
     throw new ArgumentNullException("ReactApp is not configured");

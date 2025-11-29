@@ -23,13 +23,20 @@ import {
   logoutAction,
   registerAction,
   resetPasswordAction,
+  forgotPasswordAction,
 } from "./actions/authActions";
 import RegisterPage from "./pages/RegisterPage";
 import EditProductPage from "./pages/EditProductPage";
-import { rootLoader, usersLoader } from "./loaders/authLoaders";
+import {
+  confirmEmailLoader,
+  rootLoader,
+  usersLoader,
+} from "./loaders/authLoaders";
 import UsersPage from "./pages/UsersPage";
 import HomePage from "./pages/HomePage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ConfirmEmailPage from "./pages/ConfirmEmailPage";
 
 const AppRouter = createBrowserRouter([
   {
@@ -93,9 +100,19 @@ const AppRouter = createBrowserRouter([
         action: deleteUserAction,
       },
       {
+        path: "forgot-password",
+        action: forgotPasswordAction,
+        Component: ForgotPasswordPage,
+      },
+      {
         path: "password/reset",
         action: resetPasswordAction,
         Component: ResetPasswordPage,
+      },
+      {
+        path: "confirm-email",
+        loader: confirmEmailLoader,
+        Component: ConfirmEmailPage,
       },
       {
         path: "*",

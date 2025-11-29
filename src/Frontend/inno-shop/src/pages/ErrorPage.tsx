@@ -17,7 +17,7 @@ const ErrorPage = () => {
             <h1>Oops!</h1>
             <p>Something went wrong.</p>
             <p>
-              <i>{error.message || "Unknown Error"}</i>
+              <i>{(error as Error).message || "Unknown Error"}</i>
             </p>
           </>
         )}

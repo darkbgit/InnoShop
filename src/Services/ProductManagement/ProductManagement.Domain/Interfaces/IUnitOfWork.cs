@@ -5,6 +5,6 @@ namespace ProductManagement.Domain.Interfaces;
 public interface IUnitOfWork
 {
     IReadRepository<Category> Categories { get; }
-    IRepository<Product> Products { get; }
+    IProductRepository Products { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

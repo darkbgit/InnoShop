@@ -1,25 +1,10 @@
 import { Button, TextField, Typography, Container, Box } from "@mui/material";
-import {
-  Form,
-  useActionData,
-  useNavigation,
-  useSearchParams,
-} from "react-router";
-import { useEffect, useState } from "react";
+import { Form, useActionData, useNavigation } from "react-router";
 
-const ResetPasswordPage = () => {
+const ForgotPasswordPage = () => {
   const navigation = useNavigation();
   const actionData = useActionData() as { error?: string; message?: string };
   const isSubmitting = navigation.state === "submitting";
-  const [searchParams] = useSearchParams();
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    const tokenFromUrl = searchParams.get("token");
-    if (tokenFromUrl) {
-      setToken(tokenFromUrl);
-    }
-  }, [searchParams]);
 
   return (
     <Container maxWidth="xs">
@@ -32,7 +17,11 @@ const ResetPasswordPage = () => {
         }}
       >
         <Typography component="h1" variant="h5">
-          Reset Password
+          Forgot Password
+        </Typography>
+        <Typography component="p" variant="body2" sx={{ mt: 2, textAlign: "center" }}>
+          Enter your email address and we will send you a link to reset your
+          password.
         </Typography>
         {actionData?.error && (
           <Typography color="error" sx={{ mt: 2 }}>
@@ -45,33 +34,24 @@ const ResetPasswordPage = () => {
           </Typography>
         )}
         <Form method="post">
-          <input type="hidden" name="token" value={token || ""} />
           <TextField
             margin="normal"
             required
             fullWidth
-            name="password"
-            label="New Password"
-            type="password"
-            id="password"
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="confirmPassword"
-            label="Confirm New Password"
-            type="password"
-            id="confirmPassword"
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            disabled={isSubmitting || !token || !!actionData?.message}
+            disabled={isSubmitting || !!actionData?.message}
           >
-            {isSubmitting ? "Resetting..." : "Reset Password"}
+            {isSubmitting ? "Sending..." : "Send Password Reset Email"}
           </Button>
         </Form>
       </Box>
@@ -79,4 +59,4 @@ const ResetPasswordPage = () => {
   );
 };
 
-export default ResetPasswordPage;
+export default ForgotPasswordPage;

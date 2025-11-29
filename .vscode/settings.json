@@ -1,6 +1,4 @@
 {
-  "cSpell.words": [
-    "Inno",
-    "Npgsql"
-]
+  "cSpell.words": ["Inno", "Npgsql"],
+  "editor.defaultFormatter": "ms-dotnettools.csdevkit"
 }

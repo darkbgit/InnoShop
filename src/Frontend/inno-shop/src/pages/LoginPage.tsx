@@ -1,5 +1,14 @@
-import { Button, TextField, Typography, Container, Box } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Typography,
+  Container,
+  Box,
+  Grid,
+  Link,
+} from "@mui/material";
 import { Form, useActionData, useNavigation } from "react-router";
+import { Link as RouterLink } from "react-router";
 
 const LoginPage = () => {
   const navigation = useNavigation();
@@ -52,6 +61,22 @@ const LoginPage = () => {
           >
             {isSubmitting ? "Signing In..." : "Sign In"}
           </Button>
+          <Grid container>
+            <Grid>
+              <Link
+                component={RouterLink}
+                to="/forgot-password"
+                variant="body2"
+              >
+                Reset password?
+              </Link>
+            </Grid>
+            <Grid>
+              <Link component={RouterLink} to="/register" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
         </Form>
       </Box>
     </Container>

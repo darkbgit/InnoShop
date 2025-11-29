@@ -1,0 +1,13 @@
+namespace UserManagement.Infrastructure.Options;
+
+public class EmailOptions
+{
+    public static string SectionName = "Email";
+    public string FromAddress { get; set; } = string.Empty;
+    public string FromName { get; set; } = string.Empty;
+    public string Server { get; set; } = string.Empty;
+    public int Port { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public bool UseSsl { get; set; }
+}
