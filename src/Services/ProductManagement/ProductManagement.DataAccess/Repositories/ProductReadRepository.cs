@@ -51,12 +51,12 @@ internal class ProductReadRepository(InnoShopContext context, IMapper mapper) : 
         return result;
     }
 
-    public Task<ProductDto?> GetProductDtoByIdAsync(long id, CancellationToken cancellationToken = default)
+    public Task<ProductDetailDto?> GetProductDtoByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         return Table.AsNoTracking()
             .Where(p => p.Id == id)
             .Include(p => p.Category)
-            .Select(p => _mapper.Map<ProductDto>(p))
+            .Select(p => _mapper.Map<ProductDetailDto>(p))
             .SingleOrDefaultAsync(cancellationToken);
     }
 

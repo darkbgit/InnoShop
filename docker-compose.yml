@@ -1,0 +1,89 @@
+version: "3.4"
+
+services:
+  innoshop.ui:
+    image: ${DOCKER_REGISTRY-}innoshop.ui
+    build:
+      context: ./src/Frontend/inno-shop
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_PRODUCT_MANAGEMENT=https://localhost:7000/api
+      - VITE_USER_MANAGEMENT=https://localhost:7001/api/user-management
+    depends_on:
+      - products.api
+      - users.api
+    container_name: innoshop.ui
+
+  products.api:
+    image: ${DOCKER_REGISTRY-}products.api
+    build:
+      context: .
+      dockerfile: ./src/Services/ProductManagement/ProductManagement.API/Dockerfile
+    ports:
+      - "7000:443"
+      - "5000:80"
+    environment:
+      - ConnectionStrings:DefaultConnection=Host=products.db;Port=5432;Database=Product.Database;Username=postgres;Password=postgrespw
+      - AuthClient=https://users.api/api/user-management
+      - ASPNETCORE_URLS=https://+:443;http://+:80;
+      - ASPNETCORE_HTTPS_PORT=7000
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/mnt/c/https/aspnetapp.pfx
+    volumes:
+      - ${USERPROFILE}/.aspnet/https:/mnt/c/https:ro
+    depends_on:
+      - products.db
+    container_name: products.api
+
+  users.api:
+    image: ${DOCKER_REGISTRY-}users.api
+    build:
+      context: .
+      dockerfile: ./src/Services/UserManagement/UserManagement.API/Dockerfile
+    ports:
+      - "5001:80"
+      - "7001:443"
+    environment:
+      - ConnectionStrings:DefaultConnection=Server=users.db;Database=mydatabase;User=sa;Password=Admin!1admin;TrustServerCertificate=True;
+      #- FrontendOptions:Url=http://innoshop.ui:5173
+      - FrontendOptions:ResetPasswordUrl=http://innoshop.ui/password/reset
+      - ProductService:Url=https://products.api/api
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=7001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/mnt/c/https/aspnetapp.pfx
+    volumes:
+      - ${USERPROFILE}/.aspnet/https:/mnt/c/https:ro
+    depends_on:
+      - users.db
+    container_name: users.api
+
+  users.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Admin!1admin"
+    ports:
+      - "1433:1433"
+      #- 5433:1433
+    volumes:
+      - user_data:/var/opt/mssql
+    container_name: users.db
+
+  products.db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespw
+      POSTGRES_DB: Product.Database
+    ports:
+      - "5432:5432"
+    volumes:
+      - product_data:/var/lib/postgresql/data
+    container_name: products.db
+
+volumes:
+  product_data:
+  user_data:

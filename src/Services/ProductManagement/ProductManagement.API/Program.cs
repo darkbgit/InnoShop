@@ -6,6 +6,13 @@ using ProductManagement.DataAccess.DI;
 using Refit;
 using Shared.Core.Extensions;
 
+namespace ProductManagement.API;
+
+public class Program
+{
+public static async Task Main(string[] args)
+{
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -35,7 +42,24 @@ var authClient = builder.Configuration["AuthClient"] ??
 
 builder.Services.AddRefitClient<IAuthClient>()
     .AddHttpMessageHandler<CustomHttpMessageHandler>()
-    .ConfigureHttpClient(client => client.BaseAddress = new Uri(authClient));
+    .ConfigureHttpClient(client => client.BaseAddress = new Uri(authClient))
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        {
+            var handler = new HttpClientHandler();
+            
+            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+            {
+                if (sslPolicyErrors == System.Net.Security.SslPolicyErrors.None)
+                    return true;
+                
+                if (sender?.RequestUri?.Host == "users.api" && cert != null && cert.Subject.Contains("CN=localhost"))
+                        return true;
+        
+                return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
+            };
+
+            return handler;
+        });;
 
 builder.Services.AddControllers();
 
@@ -45,9 +69,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    await app.SeedDatabaseAsync();
 }
+
+await app.ApplyMigration();
+await app.SeedDatabaseAsync();
 
 app.UseCustomExceptionMiddleware();
 app.UseHttpsRedirection();
@@ -62,3 +87,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+}
+}

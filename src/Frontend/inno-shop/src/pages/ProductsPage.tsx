@@ -12,7 +12,7 @@ const ProductsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setSearchParams((prevParams) => {

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ProductManagement.API.Middlewares;
 using ProductManagement.DataAccess.Data;
 using ProductManagement.DataAccess.Helpers;
@@ -25,5 +26,21 @@ internal static class HostingExtensions
     public static void UseAuthFromRequestHeaderMiddleware(this WebApplication app)
     {
         app.UseMiddleware<AuthFromRequestHeaderMiddleware>();
+    }
+
+    public static async Task ApplyMigration(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<InnoShopContext>();
+            context.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while migrating the database.");
+        }
     }
 }

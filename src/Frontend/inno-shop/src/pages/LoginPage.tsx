@@ -62,7 +62,7 @@ const LoginPage = () => {
             {isSubmitting ? "Signing In..." : "Sign In"}
           </Button>
           <Grid container>
-            <Grid>
+            <Grid marginRight={10}>
               <Link
                 component={RouterLink}
                 to="/forgot-password"

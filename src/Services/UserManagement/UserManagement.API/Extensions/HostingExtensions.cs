@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using UserManagement.API.Middlewares;
+using Microsoft.EntityFrameworkCore;
 using UserManagement.Infrastructure.Data;
 using UserManagement.Infrastructure.Helpers;
 
@@ -21,6 +21,22 @@ public static class HostingExtensions
         {
             var logger = services.GetRequiredService<ILogger<Program>>();
             logger.LogError(ex, "An error occurred seeding the DB.");
+        }
+    }
+
+    public static async Task ApplyMigration(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<InnoShopUserContext>();
+            context.Database.Migrate();
+        }
+        catch (Exception ex)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while migrating the database.");
         }
     }
 }

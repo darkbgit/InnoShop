@@ -9,7 +9,7 @@ internal class ProductRepository(InnoShopContext context) : BaseRepository<Produ
 {
     public Task DeleteProductsByUserIdAsync(string userId, CancellationToken cancellationToken = default)
     {
-        if (!string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
         {
             throw new ArgumentException("Invalid userId format. Must be a valid GUID.", nameof(userId));
         }
@@ -27,7 +27,7 @@ internal class ProductRepository(InnoShopContext context) : BaseRepository<Produ
 
     public Task RestoreProductsByUserIdAsync(string userId, CancellationToken cancellationToken = default)
     {
-        if (!string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+        if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
         {
             throw new ArgumentException("Invalid userId format. Must be a valid GUID.", nameof(userId));
         }

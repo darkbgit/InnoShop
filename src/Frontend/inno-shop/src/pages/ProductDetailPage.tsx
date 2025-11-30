@@ -14,7 +14,7 @@ export const ProductDetailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentPage } = location.state || {};
-  const { productId } = useParams<{ productId: string }>();
+  useParams<{ productId: string; }>();
   const product = useLoaderData<typeof loadProductDetail>();
   if (!product) {
     return <div>Loading...</div>;
@@ -26,7 +26,7 @@ export const ProductDetailPage = () => {
         <input type="hidden" name="id" value={product.id} />
         <Button type="submit">Delete</Button>
       </Form>
-      <Button onClick={() => navigate(-1, { state: { currentPage } })}>
+      <Button onClick={() => navigate("..", { state: { currentPage } })}>
         Back to list
       </Button>
     </div>

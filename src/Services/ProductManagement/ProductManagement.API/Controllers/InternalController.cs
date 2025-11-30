@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Core.Features.DeleteProductsByUserId;
 using ProductManagement.Core.Features.RestoreProductsByUserId;
@@ -7,6 +8,7 @@ namespace ProductManagement.API.Controllers;
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InternalController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;

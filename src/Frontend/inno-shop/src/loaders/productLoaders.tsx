@@ -82,6 +82,9 @@ export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
   ]);
 
   if (user.id !== product.createdBy) throw new Response("", { status: 403 });
+
+  const category = categories.find(cat => cat.name === product.categoryName);
+  
   const productEdit = {
     id: product.id,
     name: product.name,
@@ -91,7 +94,7 @@ export const editProductLoader = async ({ params }: LoaderFunctionArgs) => {
     isAvailable: product.isAvailable,
     isOnSale: product.isOnSale,
     salePrice: product.salePrice,
-    categoryId: product.categoryId,
+    categoryId: category?.id || 1,
   };
   return { product: productEdit, categories: categories };
 };

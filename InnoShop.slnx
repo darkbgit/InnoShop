@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/src/" />
-  <Folder Name="/src/Services/" >
+  <Folder Name="/src/Services/">
     <Project Path="src/Services/Shared.Core/Shared.Core.csproj" />
   </Folder>
   <Folder Name="/src/Services/ProductManagement/">
@@ -15,5 +15,8 @@
     <Project Path="src/Services/UserManagement/UserManagement.Infrastructure/UserManagement.Infrastructure.csproj" />
     <Project Path="src/Services/UserManagement/UserManagement.Domain/UserManagement.Domain.csproj" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="test/InnoShop.IntegrationTests/InnoShop.IntegrationTests.csproj" />
+    <Project Path="test/InnoShop.UnitTests/InnoShop.UnitTests.csproj" />
+  </Folder>
 </Solution>

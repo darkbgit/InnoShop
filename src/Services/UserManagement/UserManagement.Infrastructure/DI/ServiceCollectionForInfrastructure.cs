@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +22,9 @@ public class ServiceCollectionForInfrastructure
             options.UseSqlServer(connectionString));
 
         services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-                    options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<InnoShopUserContext>();
+                    options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<InnoShopUserContext>()
+                .AddDefaultTokenProviders();
         //.AddClaimsPrincipalFactory<>();
 
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));

@@ -59,7 +59,7 @@ public class IdentityService(UserManager<ApplicationUser> userManager,
 
     public async Task<User?> GetUserByIdAsync(Guid id)
     {
-        var appUser = await _userManager.FindByIdAsync(id.ToString());
+        var appUser = await _userManager.Users.SingleOrDefaultAsync(u => u.Id == id);
 
         var result = _mapper.Map<User>(appUser);
 

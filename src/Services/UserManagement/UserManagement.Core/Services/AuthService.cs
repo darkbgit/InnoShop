@@ -80,7 +80,7 @@ public class AuthService(IIdentityService identityService,
     {
         var token = await _identityService.GeneratePasswordResetTokenAsync(email);
 
-        if (token == null)
+        if (string.IsNullOrWhiteSpace(token))
             return;
 
         var resetLink = $"{_frontendOptions.ResetPasswordUrl}?{token}";

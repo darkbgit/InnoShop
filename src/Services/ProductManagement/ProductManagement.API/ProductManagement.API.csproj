@@ -19,4 +19,10 @@
     <ProjectReference Include="..\ProductManagement.DataAccess\ProductManagement.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>InnoShop.IntegrationTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
 </Project>

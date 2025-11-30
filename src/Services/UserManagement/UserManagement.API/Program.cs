@@ -59,9 +59,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-
-    await app.SeedDatabaseAsync();
 }
+
+await app.ApplyMigration();
+await app.SeedDatabaseAsync();
 
 app.UseCustomExceptionMiddleware();
 app.UseHttpsRedirection();

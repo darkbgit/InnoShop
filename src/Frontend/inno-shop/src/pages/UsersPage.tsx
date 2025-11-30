@@ -5,10 +5,10 @@ import { List, ListItem, Pagination, Stack } from "@mui/material";
 
 const UsersPage = () => {
   const paginatedUsers = useLoaderData<typeof usersLoader>();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setSearchParams((prevParams) => {

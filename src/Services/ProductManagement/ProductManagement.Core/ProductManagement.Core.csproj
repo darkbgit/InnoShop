@@ -18,8 +18,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DeleteProductsByUserId\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
+
+  <ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>InnoShop.UnitTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>InnoShop.IntegrationTests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 
 </Project>
